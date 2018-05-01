@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="PythiaProtocolContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Virgil.Crypto" Version="2.4.0-rc1" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Virgil.SDK">
+      <HintPath>..\..\..\virgil-sdk-net\SDK\Source\Virgil.SDK.Std\bin\Debug\netstandard1.1\Virgil.SDK.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client\" />
+    <Folder Include="Crypto\" />
+  </ItemGroup>
+</Project>
