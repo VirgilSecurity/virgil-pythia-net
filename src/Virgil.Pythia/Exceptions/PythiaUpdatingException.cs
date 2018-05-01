@@ -36,12 +36,9 @@
 
 namespace Virgil.Pythia.Exceptions
 {
-    public class PythiaProofIsNotValidException : PythiaProtocolException
+    public class PythiaUpdatingException : PythiaProtocolException
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PythiaProofIsNotValidException"/> class.
-        /// </summary>
-        public PythiaProofIsNotValidException() : base("Pythia Proof is not valid")
+        public PythiaUpdatingException(string message) : base(message)
         {
         }
     }

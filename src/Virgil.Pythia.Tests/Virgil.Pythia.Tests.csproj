@@ -25,4 +25,7 @@
       <HintPath>..\..\..\virgil-sdk-net\SDK\Source\Virgil.SDK.Std\bin\Debug\netstandard1.1\Virgil.SDK.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="TestUtils.cs" />
+  </ItemGroup>
 </Project>

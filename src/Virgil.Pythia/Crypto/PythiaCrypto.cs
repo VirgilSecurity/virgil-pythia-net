@@ -62,12 +62,15 @@ namespace Virgil.Pythia.Crypto
         /// </summary>
         /// <returns>The blind.</returns>
         /// <param name="password">Password.</param>
-        public Tuple<byte[], byte[]> Blind(string password)
+        public BlindingResult Blind(string password)
         {
             var blindingResult = this.pythia.Blind(Bytes.FromString(password));
 
-            return new Tuple<byte[], byte[]>(
-                blindingResult.BlindedPassword(), blindingResult.BlindingSecret());
+            return new BlindingResult
+            {
+                BlindedPassword = blindingResult.BlindedPassword(),
+                BlindingSecret = blindingResult.BlindingSecret()
+            };
         }
 
         public byte[] Deblind(byte[] transformedPassword, byte[] blindingSecret)
@@ -88,11 +91,15 @@ namespace Virgil.Pythia.Crypto
             return this.UpdateDeblindedPassword(deblindedPassword, updateToken);
         }
 
-        public bool Verify(byte[] transformedPassword, byte[] blindedPassword, 
-            byte[] salt, byte[] proofKey, byte[] proofC, byte[] proofU)
+        public bool Verify(PythiaProofParams parameters)
         {
-            return this.pythia.Verify(transformedPassword, blindedPassword, 
-                salt, proofKey, proofC, proofU);
+            return this.pythia.Verify(
+                parameters.TransformedPassword, 
+                parameters.BlindedPassword,
+                parameters.Tweak, 
+                parameters.TransformationPublicKey, 
+                parameters.ProofValueC, 
+                parameters.ProofValueU);
         }
 
         public void Dispose()

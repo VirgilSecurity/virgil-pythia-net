@@ -38,15 +38,10 @@ namespace Virgil.Pythia.Crypto
 
     public interface IPythiaCrypto
     {
-        Tuple<byte[], byte[]> Blind(string password);
-
+        BlindingResult Blind(string password);
         byte[] Deblind(byte[] transformedPassword, byte[] blindingSecret);
-
-        bool Verify(byte[] transformedPassword, byte[] blindedPassword, 
-                    byte[] salt, byte[] proofKey, byte[] proofC, byte[] proofU);
-        
+        bool Verify(PythiaProofParams parameters);
         byte[] UpdateDeblindedPassword(byte[] deblindedPassword, byte[] updateToken);
-
         byte[] GenerateSalt(uint size = 32);
     }
 }

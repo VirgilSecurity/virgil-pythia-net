@@ -1,6 +1,4 @@
-﻿// // Copyright (C) 2015-2018 Virgil Security Inc.
-// // 
-// Copyright (C) 2015-2018 Virgil Security Inc.
+﻿// Copyright (C) 2015-2018 Virgil Security Inc.
 // 
 // Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
 // 
@@ -34,15 +32,12 @@
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-namespace Virgil.Pythia.Exceptions
+namespace Virgil.Pythia.Crypto
 {
-    public class PythiaProofIsNotValidException : PythiaProtocolException
+    public class BlindingResult
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PythiaProofIsNotValidException"/> class.
-        /// </summary>
-        public PythiaProofIsNotValidException() : base("Pythia Proof is not valid")
-        {
-        }
+        public byte[] BlindedPassword { get; set; }
+
+        public byte[] BlindingSecret { get; set; }
     }
 }

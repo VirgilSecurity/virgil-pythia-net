@@ -55,11 +55,6 @@ namespace Virgil.Pythia
     /// allows for developers to protect their users passwords in case database
     /// has been stolen or compromised. 
     /// </summary>
-    /// <remarks>
-    /// The database cannot be cracked using an offline brute-force attack: 
-    /// an attacker must query the PYTHIA service from a compromised server 
-    /// for each password guess.
-    /// </remarks>
     public class PythiaProtocol
     {
         private readonly IPythiaCrypto pythiaCrypto;
@@ -96,12 +91,59 @@ namespace Virgil.Pythia
         /// Verifies the user's original password by specified breach-proof password.
         /// </summary>/// 
         /// <param name="originalPassword">The original user's password</param>
-        /// <param name="breachProofPassword"></param>/// 
+        /// <param name="breachProofPassword"></param>
         /// <returns>Returns true if password is valid, otherwise false.</returns>
-        public Task<bool> VerifyBreachProofPasswordAsync(string originalPassword,
-            BreachProofPassword breachProofPassword)
+        public async Task<bool> VerifyBreachProofPasswordAsync(string originalPassword,
+            BreachProofPassword breachProofPassword, bool prove = false)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(originalPassword))
+            {
+                throw new ArgumentNullException(nameof(originalPassword));
+            }
+
+            if (breachProofPassword == null)
+            {
+                throw new ArgumentNullException(nameof(breachProofPassword));
+            }
+
+            var blindingResult = this.pythiaCrypto.Blind(originalPassword);
+
+            var transformModel = new TransformModel
+            {
+                BlindedPassword = blindingResult.BlindedPassword,
+                Salt = breachProofPassword.Salt,
+                Version = breachProofPassword.Version,
+                IncludeProof = prove
+            };
+
+            var token = await this.tokenProvider.GetTokenAsync(null).ConfigureAwait(false);
+
+            var result = await this.client.TransformPasswordAsync(
+                transformModel, token.ToString()).ConfigureAwait(false);
+
+            if (prove) 
+            {
+                var proofKey = this.proofKeys[breachProofPassword.Version];
+                var proofParams = new PythiaProofParams
+                {
+                    TransformedPassword = result.TransformedPassword,
+                    TransformationPublicKey = proofKey,
+                    BlindedPassword = blindingResult.BlindedPassword,
+                    Tweak = breachProofPassword.Salt,
+                    ProofValueC = result.Proof.ValueC,
+                    ProofValueU = result.Proof.ValueU
+                };
+
+                if (!this.pythiaCrypto.Verify(proofParams))
+                {
+                    throw new PythiaProofIsNotValidException();
+                }
+            }
+
+            var deblindedPassword = this.pythiaCrypto.Deblind(
+                result.TransformedPassword, blindingResult.BlindingSecret);
+
+            return deblindedPassword.SequenceEqual(breachProofPassword.DeblindedPassword);
         }
 
         /// <summary>
@@ -111,9 +153,39 @@ namespace Virgil.Pythia
         /// <param name="breachProofPassword">Breach proof password.</param> 
         /// <param name="updateToken">Update token.</param>
         public BreachProofPassword UpdateBreachProofPassword(
-            BreachProofPassword breachProofPassword, string updateToken)
+            string updateToken, BreachProofPassword breachProofPassword)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(updateToken))
+            {
+                throw new ArgumentNullException(nameof(updateToken));
+            }
+
+            if (breachProofPassword == null)
+            {
+                throw new ArgumentNullException(nameof(breachProofPassword));
+            }
+
+            var parsedUpdateToken = this.TryParseUpdateToken(updateToken);
+
+            if (breachProofPassword.Version == parsedUpdateToken.Item2)
+            {
+                throw new PythiaUpdatingException("This breach-proof password has already been updated");
+            }
+
+            if (breachProofPassword.Version != parsedUpdateToken.Item1)
+            {
+                throw new PythiaUpdatingException("This breach-proof password version does not match this update token");
+            }
+
+            var newDeblindedPassword = this.pythiaCrypto.UpdateDeblindedPassword(
+                breachProofPassword.DeblindedPassword, parsedUpdateToken.Item3);
+
+            return new BreachProofPassword
+            {
+                DeblindedPassword = newDeblindedPassword,
+                Version = parsedUpdateToken.Item2,
+                Salt = breachProofPassword.Salt
+            };
         }
 
         /// <summary>
@@ -124,7 +196,7 @@ namespace Virgil.Pythia
         {
             if (string.IsNullOrEmpty(password))
             {
-                throw new ArgumentException("Password cannot be null or empty", nameof(password));
+                throw new ArgumentNullException(nameof(password));
             }
 
             var blindingResult = this.pythiaCrypto.Blind(password);
@@ -135,7 +207,7 @@ namespace Virgil.Pythia
 
             var transformModel = new TransformModel
             {
-                BlindedPassword = blindingResult.Item1,
+                BlindedPassword = blindingResult.BlindedPassword,
                 Salt = salt,
                 Version = currentVersion,
                 IncludeProof = true
@@ -146,15 +218,23 @@ namespace Virgil.Pythia
             var result = await this.client.TransformPasswordAsync(
                 transformModel, token.ToString()).ConfigureAwait(false);
 
-            if (!this.pythiaCrypto.Verify(result.TransformedPassword, 
-                    transformModel.BlindedPassword, salt, currentProofKey, result.Proof.ValueC, result.Proof.ValueU))
+            var proofParams = new PythiaProofParams
+            {
+                TransformedPassword = result.TransformedPassword,
+                TransformationPublicKey = currentProofKey,
+                BlindedPassword = blindingResult.BlindedPassword,
+                Tweak = salt,
+                ProofValueC = result.Proof.ValueC,
+                ProofValueU = result.Proof.ValueU
+            };
 
+            if (!this.pythiaCrypto.Verify(proofParams))
             {
                 throw new PythiaProofIsNotValidException();
             }
 
             var deblindedPassword = this.pythiaCrypto.Deblind(
-                result.TransformedPassword, blindingResult.Item2);
+                result.TransformedPassword, blindingResult.BlindingSecret);
 
             return new BreachProofPassword 
             {
