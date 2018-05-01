@@ -41,5 +41,5 @@ namespace Virgil.Pythia
         public byte[] Salt { get; set; }
 
         public int Version { get; set; }
-	}
+    }
 }

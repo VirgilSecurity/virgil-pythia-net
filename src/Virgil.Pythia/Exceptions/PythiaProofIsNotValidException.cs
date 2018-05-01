@@ -1,4 +1,6 @@
-﻿// Copyright (C) 2015-2018 Virgil Security Inc.
+﻿// // Copyright (C) 2015-2018 Virgil Security Inc.
+// // 
+// Copyright (C) 2015-2018 Virgil Security Inc.
 // 
 // Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
 // 
@@ -32,20 +34,16 @@
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-namespace Virgil.Pythia.Client
+namespace Virgil.Pythia.Exceptions
 {
-    using System.Runtime.Serialization;
-
-    [DataContract]
-    public class TransformResultModel
+    public class PythiaProofIsNotValidException : PythiaProtocolException
     {
-        [DataMember(Name = "transformed_password")]
-        public byte[] TransformedPassword { get; set; }
-
-        [DataMember(Name = "version")]
-        public uint Version { get; set; }
-
-        [DataMember(Name = "proof")]
-        public ProofModel Proof { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PythiaProofIsNotValidException"/> class.
+        /// </summary>
+        public PythiaProofIsNotValidException()
+            : base("Pythia Proof is not valid")
+        {
+        }
     }
 }

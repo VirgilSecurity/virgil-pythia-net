@@ -53,7 +53,7 @@ namespace Virgil.Pythia
         /// </summary>
         public PythiaProtocolConfig()
         {
-            this.ApiBaseURL = "https://api.virgilsecurity.com";
+            this.ApiURL = "https://api.virgilsecurity.com";
         }
         
         /// <summary>

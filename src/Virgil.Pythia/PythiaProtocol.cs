@@ -44,6 +44,7 @@ namespace Virgil.Pythia
 
     using Virgil.Pythia.Client;
     using Virgil.Pythia.Crypto;
+    using Virgil.Pythia.Exceptions;
 
     using Virgil.SDK.Common;
     using Virgil.SDK.Web.Authorization;
@@ -97,7 +98,7 @@ namespace Virgil.Pythia
         /// <param name="originalPassword">The original user's password</param>
         /// <param name="breachProofPassword"></param>/// 
         /// <returns>Returns true if password is valid, otherwise false.</returns>
-        public Task<bool> VerifyPasswordAsync(string originalPassword,
+        public Task<bool> VerifyBreachProofPasswordAsync(string originalPassword,
             BreachProofPassword breachProofPassword)
         {
             throw new NotImplementedException();
@@ -107,8 +108,8 @@ namespace Virgil.Pythia
         /// Updates the user's breach-proof password by specified update token.
         /// </summary>
         /// <returns>The breach-proof password.</returns>
+        /// <param name="breachProofPassword">Breach proof password.</param> 
         /// <param name="updateToken">Update token.</param>
-        /// <param name="breachProofPassword">Breach proof password.</param>
         public BreachProofPassword UpdateBreachProofPassword(
             BreachProofPassword breachProofPassword, string updateToken)
         {
@@ -137,20 +138,23 @@ namespace Virgil.Pythia
                 BlindedPassword = blindingResult.Item1,
                 Salt = salt,
                 Version = currentVersion,
-                IncludeProof = false
+                IncludeProof = true
             };
 
             var token = await this.tokenProvider.GetTokenAsync(null).ConfigureAwait(false);
 
-            var result = await this.client.TransformPassword(
+            var result = await this.client.TransformPasswordAsync(
                 transformModel, token.ToString()).ConfigureAwait(false);
 
-            //this.pythiaCrypto.Verify(result.TransformedPasswordBytes, 
-            //    transformModel.BlindedPasswordBytes, salt, 
-            //    currentProofKey, result.Proof.ValueC, result.Proof.ValueU);
+            if (!this.pythiaCrypto.Verify(result.TransformedPassword, 
+                    transformModel.BlindedPassword, salt, currentProofKey, result.Proof.ValueC, result.Proof.ValueU))
+
+            {
+                throw new PythiaProofIsNotValidException();
+            }
 
             var deblindedPassword = this.pythiaCrypto.Deblind(
-                result.TransformedPasswordBytes, blindingResult.Item2);
+                result.TransformedPassword, blindingResult.Item2);
 
             return new BreachProofPassword 
             {
@@ -207,25 +211,31 @@ namespace Virgil.Pythia
 
             if (string.IsNullOrWhiteSpace(config.AppId))
             {
-                throw new ArgumentException($"{nameof(config.AppId)} value cannot be null or empty");
+                throw new ArgumentException(
+                    $"{nameof(config.AppId)} value cannot be null or empty");
             }
 
             if (string.IsNullOrWhiteSpace(config.ApiKeyId))
             {
-                throw new ArgumentException($"{nameof(config.ApiKeyId)} value cannot be null or empty");
+                throw new ArgumentException(
+                    $"{nameof(config.ApiKeyId)} value cannot be null or empty");
             }
 
             if (string.IsNullOrWhiteSpace(config.ApiKey))
             {
-                throw new ArgumentException($"{nameof(config.ApiKey)} value cannot be null or empty");
+                throw new ArgumentException(
+                    $"{nameof(config.ApiKey)} value cannot be null or empty");
             }
 
             var crypto = new VirgilCrypto();
             var signer = new VirgilAccessTokenSigner();
 
-            var apiKey = crypto.ImportPrivateKey(Bytes.FromString(config.ApiKey, StringEncoding.BASE64));
+            var apiKey = crypto.ImportPrivateKey(
+                Bytes.FromString(config.ApiKey, StringEncoding.BASE64));
 
-            var generator = new JwtGenerator(config.AppId, apiKey, config.ApiKeyId, TimeSpan.FromDays(1), signer);
+            var generator = new JwtGenerator(config.AppId, apiKey, 
+                config.ApiKeyId, TimeSpan.FromDays(1), signer);
+            
             var jwt = generator.GenerateToken("PYTHIA-CLIENT");
 
             var connection = new ServiceConnection(config.ApiURL);
@@ -234,7 +244,9 @@ namespace Virgil.Pythia
             var client = new PythiaClient(connection, new NewtonsoftJsonSerializer());
             var pythiaCrypto = new PythiaCrypto();
 
-            var protocol = new PythiaProtocol(client, pythiaCrypto, tokenProvider, config.ProofKeys);
+            var protocol = new PythiaProtocol(client, pythiaCrypto, 
+                tokenProvider, config.ProofKeys);
+            
             return protocol;
         }
     }

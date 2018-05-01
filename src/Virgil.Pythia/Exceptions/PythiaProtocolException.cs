@@ -34,10 +34,8 @@
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-namespace Virgil.Pythia
+namespace Virgil.Pythia.Exceptions
 {
-    using System;
-
     using Virgil.SDK;
 
     public class PythiaProtocolException : VirgilException
@@ -45,7 +43,8 @@ namespace Virgil.Pythia
         /// <summary>
         /// Initializes a new instance of the <see cref="PythiaProtocolException"/> class.
         /// </summary>
-        public PythiaProtocolException(string message) : base(message)
+        public PythiaProtocolException(string message) 
+            : base(message)
         {
         }
     }

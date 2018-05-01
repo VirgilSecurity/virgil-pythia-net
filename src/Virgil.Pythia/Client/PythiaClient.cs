@@ -63,7 +63,7 @@ namespace Virgil.Pythia.Client
         /// Performs blinded password transformation by calling <c>transform</c> 
         /// operation on the Pythia Serivce.
         /// </summary>
-        public async Task<TransformResultModel> TransformPassword(TransformModel model, string accessToken)
+        public async Task<TransformResultModel> TransformPasswordAsync(TransformModel model, string accessToken)
         {
             if (model == null)
             {
