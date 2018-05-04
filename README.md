@@ -186,6 +186,6 @@ You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us emai
 Also, get extra help from our support team on [Slack](https://virgilsecurity.slack.com/join/shared_invite/enQtMjg4MDE4ODM3ODA4LTc2OWQwOTQ3YjNhNTQ0ZjJiZDc2NjkzYjYxNTI0YzhmNTY2ZDliMGJjYWQ5YmZiOGU5ZWEzNmJiMWZhYWVmYTM).
 
 [_virgil_crypto_pythia]: https://github.com/VirgilSecurity/pythia
-[_pythia_use_case]: https://developer.virgilsecurity.com/docs/go/use-cases/v5/breach-proof-password
+[_pythia_use_case]: https://developer.virgilsecurity.com/docs/cs/use-cases/v5/breach-proof-password
 [_documentation]: https://developer.virgilsecurity.com/
 [_dashboard]: https://dashboard.virgilsecurity.com/
