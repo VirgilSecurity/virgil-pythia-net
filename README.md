@@ -1,6 +1,6 @@
 # Virgil Pythia .NET/C# SDK
 
-[![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
+[![Nuget package](https://img.shields.io/nuget/v/Virgil.Pythia.svg)](https://www.nuget.org/packages/Virgil.Pythia/0.1.0-beta) [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
 
 
 [Introduction](#introduction) | [SDK Features](#sdk-features) | [Install and configure SDK](#install-and-configure-sdk) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
