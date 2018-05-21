@@ -105,7 +105,9 @@ Now we can start creating breach-proof passwords for users. Depending on the sit
 - `CreateBreachProofPassword` is used to create a user's breach-proof password on your Application Server.
 - `VerifyBreachProofPassword` is used to verify a user's breach-proof password.
 
-### Create Breach-Proof Password
+### Breach-Proof Password
+
+#### Create Breach-Proof Password
 
 Use this flow to create a new breach-proof password for a user.
 
@@ -126,7 +128,7 @@ After performing `CreateBreachProofPassword` function you get previously mention
 
 Check that you updated all database records and delete the now unnecessary column where user passwords were previously stored.
 
-### Verify Breach-Proof Password
+#### Verify Breach-Proof Password
 
 Use this flow when a user already has his or her own breach-proof password in your database. You will have to pass his or her password into an `VerifyBreachProofPassword` function:
 
@@ -146,7 +148,7 @@ if (!isValid)
 
 The difference between the `VerifyBreachProofPassword` and `CreateBreachProofPassword` functions is that the verification of Pythia Service is optional in `VerifyBreachProofPassword` function, which allows you to achieve maximum performance when processing data. You can turn on a proof step in `VerifyBreachProofPassword` function if you have any suspicions that a user or Pythia Service were compromised.
 
-### Update breach-proof passwords
+#### Update breach-proof passwords
 
 This step will allow you to use an `updateToken` in order to update users' breach-proof passwords in your database.
 
