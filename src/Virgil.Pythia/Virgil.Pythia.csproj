@@ -2,14 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>Virgil.Pythia</PackageId>
+    <PackageVersion>0.1.0-beta</PackageVersion>
+    <Authors>Virgil Security, Inc</Authors>
+    <Description>Virgil Pythia is a new technology that gives you a new, more secure mechanism that "breach-proofs" user passwords and lessens the security risks associated with weak passwords. With Pythia, passwords are no longer the weakest link in your system.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="PythiaProtocolContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Virgil.Crypto" Version="2.4.0-rc1" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    <PackageReference Include="Virgil.Crypto" Version="2.4.3.1" />
+    <PackageReference Include="Virgil.SDK" Version="5.0.4" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Virgil.SDK">

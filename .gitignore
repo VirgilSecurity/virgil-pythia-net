@@ -39,3 +39,5 @@ Thumbs.db
 
 # dotCover
 *.dotCover
+
+src/Virgil.Pythia.Tests/appsettings.json

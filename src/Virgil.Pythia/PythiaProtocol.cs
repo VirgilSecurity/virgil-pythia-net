@@ -142,7 +142,7 @@ namespace Virgil.Pythia
 
             var deblindedPassword = this.pythiaCrypto.Deblind(
                 result.TransformedPassword, blindingResult.BlindingSecret);
-
+            
             return deblindedPassword.SequenceEqual(breachProofPassword.DeblindedPassword);
         }
 

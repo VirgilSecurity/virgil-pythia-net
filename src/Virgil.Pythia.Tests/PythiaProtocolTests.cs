@@ -1,12 +1,12 @@
 ﻿namespace Virgil.Pythia.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using FizzWare.NBuilder;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
     using NSubstitute;
 
     using Virgil.Pythia.Client;
@@ -39,18 +39,12 @@
 
             client.TransformPasswordAsync(Arg.Any<TransformModel>(), Arg.Any<string>()).Returns(Task.FromResult(model));
 
-            var proofKeys = new[]
-            {
-                "PK.1.AgwhFXaYR7EWiTxeCCj269+cZKcRiT7x2Ifbyi4HrMnpSCapaoUzoK8rIJSNJC++jA==",
-                "PK.3.AwQv8oHsgsrOet//6kp8hsa8ZFEN0HqBS8ENze2A2VPhmtLUo3R+/Ig0lt/yYUzy8Q==",
-                "PK.2.Aw/DlJjsqdED6pTCpIwqZmUZNT38F2ZvKtEBMVAIQJEamORuT++s65+B6MA3uNZ5kg=="
-            };
-
+            var proofKeys = AppSettings.Get.ProtocolTestData.ProofKeys;
             var protocol = new PythiaProtocol(client, crypto, provider, proofKeys);
             var result = await protocol.CreateBreachProofPasswordAsync(password);
 
             var tm = (TransformModel)client.ReceivedCalls().Single().GetArguments().First();
-            tm.Version.Should().Be(3);
+            tm.Version.Should().Be(5);
         }
 
         [TestMethod]

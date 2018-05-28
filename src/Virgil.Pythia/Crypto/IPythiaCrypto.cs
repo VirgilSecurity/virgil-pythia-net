@@ -41,6 +41,7 @@ namespace Virgil.Pythia.Crypto
         BlindingResult Blind(string password);
         byte[] Deblind(byte[] transformedPassword, byte[] blindingSecret);
         bool Verify(PythiaProofParams parameters);
+
         byte[] UpdateDeblindedPassword(byte[] deblindedPassword, byte[] updateToken);
         byte[] GenerateSalt(uint size = 32);
     }

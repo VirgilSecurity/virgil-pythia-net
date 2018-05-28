@@ -36,6 +36,7 @@ namespace Virgil.Pythia.Client
 {
     using System.Runtime.Serialization;
 
+    [DataContract]
     public class ProofModel
     {
         [DataMember(Name = "value_c")]

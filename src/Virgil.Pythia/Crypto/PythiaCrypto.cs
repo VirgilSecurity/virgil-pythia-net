@@ -88,7 +88,7 @@ namespace Virgil.Pythia.Crypto
 
         public byte[] UpdateDeblindedPassword(byte[] deblindedPassword, byte[] updateToken)
         {
-            return this.UpdateDeblindedPassword(deblindedPassword, updateToken);
+            return this.pythia.UpdateDeblindedWithToken(deblindedPassword, updateToken);
         }
 
         public bool Verify(PythiaProofParams parameters)
