@@ -84,5 +84,31 @@ namespace Virgil.Pythia.Client
 
             return result;
         }
+
+        /// <summary>
+        /// Performs generating seed operation by calling <c>transform</c> 
+        /// operation on the Pythia Serivce.
+        /// </summary>
+        public async Task<GenerateSeedResultModel> GenerateSeedAsync(GenerateSeedModel model, string accessToken)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            var request = HttpRequest.Create(HttpRequestMethod.Post)
+                .WithAuthorization(accessToken)
+                .WithBody(this.serializer, model)
+                .WithEndpoint("/pythia/v1/brainkey");
+
+            var response = await this.connection.SendAsync(request)
+                .ConfigureAwait(false);
+
+            var result = response
+                .HandleError(this.serializer)
+                .Parse<GenerateSeedResultModel>(this.serializer);
+
+            return result;
+        }
     }
 }

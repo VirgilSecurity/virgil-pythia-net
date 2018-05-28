@@ -35,10 +35,9 @@
 namespace Virgil.Pythia.Crypto
 {
     using System;
-
+    using Virgil.Crypto;
     using Virgil.Crypto.Foundation;
     using Virgil.Crypto.Pythia;
-
     using Virgil.SDK.Common;
 
     /// <summary>
@@ -102,6 +101,19 @@ namespace Virgil.Pythia.Crypto
                 parameters.ProofValueU);
         }
 
+        public KeyPair GenerateKeyPair(byte[] seed)
+        {
+            using (var keyPairNative = VirgilKeyPair
+                   .GenerateFromKeyMaterial(VirgilKeyPair.Type.FAST_EC_ED25519, seed))
+            {
+                var crypto = new VirgilCrypto();
+                var publicKey = crypto.ImportPublicKey(keyPairNative.PublicKey());
+                var privateKey = crypto.ImportPrivateKey(keyPairNative.PrivateKey());
+
+                return new KeyPair((PublicKey)publicKey, (PrivateKey)privateKey);
+            }
+        }
+
         public void Dispose()
         {  
             this.Dispose(true);  
@@ -114,6 +126,6 @@ namespace Virgil.Pythia.Crypto
             {  
                 this.pythia?.Dispose();
             }  
-        }  
+        }
     }
 }

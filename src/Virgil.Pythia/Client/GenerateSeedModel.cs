@@ -32,17 +32,17 @@
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-namespace Virgil.Pythia.Crypto
+namespace Virgil.Pythia.Client
 {
-    using Virgil.Crypto;
+    using System.Runtime.Serialization;
 
-    public interface IPythiaCrypto
+    [DataContract]
+    public class GenerateSeedModel
     {
-        BlindingResult Blind(string password);
-        byte[] Deblind(byte[] transformedPassword, byte[] blindingSecret);
-        bool Verify(PythiaProofParams parameters);
-        byte[] UpdateDeblindedPassword(byte[] deblindedPassword, byte[] updateToken);
-        byte[] GenerateSalt(uint size = 32);
-        KeyPair GenerateKeyPair(byte[] seed);
+        [DataMember(Name = "brainkey_id")]
+        public string BrainKeyId { get; set; }
+
+        [DataMember(Name = "blinded_password")]
+        public byte[] BlindedPassword { get; set; }
     }
 }
