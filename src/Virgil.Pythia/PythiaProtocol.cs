@@ -116,7 +116,8 @@ namespace Virgil.Pythia
                 IncludeProof = prove
             };
 
-            var token = await this.tokenProvider.GetTokenAsync(null).ConfigureAwait(false);
+            var tokenContext = new TokenContext("pythia", "transform");
+            var token = await this.tokenProvider.GetTokenAsync(tokenContext).ConfigureAwait(false);
 
             var result = await this.client.TransformPasswordAsync(
                 transformModel, token.ToString()).ConfigureAwait(false);
@@ -213,7 +214,8 @@ namespace Virgil.Pythia
                 IncludeProof = true
             };
 
-            var token = await this.tokenProvider.GetTokenAsync(null).ConfigureAwait(false);
+            var tokenContext = new TokenContext("pythia", "transform");
+            var token = await this.tokenProvider.GetTokenAsync(tokenContext).ConfigureAwait(false);
 
             var result = await this.client.TransformPasswordAsync(
                 transformModel, token.ToString()).ConfigureAwait(false);
@@ -307,19 +309,24 @@ namespace Virgil.Pythia
                     $"{nameof(config.ApiKey)} value cannot be null or empty");
             }
 
-            var crypto = new VirgilCrypto();
-            var signer = new VirgilAccessTokenSigner();
+            Func<TokenContext, Task<string>> tokenCallback = (c) =>
+            {
+                var virgilCrypto = new VirgilCrypto();
+                var signer = new VirgilAccessTokenSigner();
 
-            var apiKey = crypto.ImportPrivateKey(
-                Bytes.FromString(config.ApiKey, StringEncoding.BASE64));
+                var apiKey = virgilCrypto.ImportPrivateKey(
+                    Bytes.FromString(config.ApiKey, StringEncoding.BASE64));
 
-            var generator = new JwtGenerator(config.AppId, apiKey, 
-                config.ApiKeyId, TimeSpan.FromDays(1), signer);
-            
-            var jwt = generator.GenerateToken("PYTHIA-CLIENT");
+                var generator = new JwtGenerator(config.AppId, apiKey,
+                    config.ApiKeyId, TimeSpan.FromDays(1), signer);
+
+                var jwt = generator.GenerateToken("PYTHIA_CLIENT");
+
+                return Task.FromResult(jwt.ToString());
+            };
 
             var connection = new ServiceConnection(config.ApiURL);
-            var tokenProvider = new ConstAccessTokenProvider(jwt);
+            var tokenProvider = new CachingJwtProvider(tokenCallback);
 
             var client = new PythiaClient(connection, new NewtonsoftJsonSerializer());
             var pythiaCrypto = new PythiaCrypto();
