@@ -37,9 +37,10 @@ namespace Virgil.Pythia
     using System;
     using System.Threading.Tasks;
 
-    using Virgil.Crypto;
+    using Virgil.CryptoAPI;
     using Virgil.Pythia.Client;
     using Virgil.Pythia.Crypto;
+
     using Virgil.SDK;
     using Virgil.SDK.Web.Authorization;
     using Virgil.SDK.Web.Connection;
@@ -60,7 +61,7 @@ namespace Virgil.Pythia
             this.crypto = pythiaCrypto;
         }
 
-        public async Task<KeyPair> GenerateKeyPair(string brainKeyPassword, string brainKeyId = null) 
+        public async Task<BrainKeyPair> GenerateKeyPair(string brainKeyPassword, string brainKeyId = null) 
         {
             var blindingResult = this.crypto.Blind(brainKeyPassword);
 
@@ -76,7 +77,8 @@ namespace Virgil.Pythia
 
             var deblindedPassword = this.crypto.Deblind(seed.Seed, blindingResult.BlindingSecret);
 
-            return this.crypto.GenerateKeyPair(deblindedPassword);
+            (IPublicKey publicKey, IPrivateKey privateKey) = this.crypto.GenerateKeyPair(deblindedPassword);
+            return new BrainKeyPair(publicKey, privateKey);
         }
 
         public static BrainKey Initialize(Func<TokenContext, Task<string>> obtainTokenCallback) 

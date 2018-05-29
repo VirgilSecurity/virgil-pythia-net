@@ -35,9 +35,12 @@
 namespace Virgil.Pythia.Crypto
 {
     using System;
+
     using Virgil.Crypto;
     using Virgil.Crypto.Foundation;
     using Virgil.Crypto.Pythia;
+    using Virgil.CryptoAPI;
+
     using Virgil.SDK.Common;
 
     /// <summary>
@@ -54,7 +57,13 @@ namespace Virgil.Pythia.Crypto
         public PythiaCrypto()
         {
             this.pythia = new VirgilPythia();
+            this.DefaultKeyPairType = KeyPairType.Default;
         }
+
+        /// <summary>
+        /// Gets or Sets the type of the key pair.
+        /// </summary>
+        public KeyPairType DefaultKeyPairType { get; set; }
 
         /// <summary>
         /// Blind the specified password.
@@ -101,17 +110,12 @@ namespace Virgil.Pythia.Crypto
                 parameters.ProofValueU);
         }
 
-        public KeyPair GenerateKeyPair(byte[] seed)
+        public (IPublicKey, IPrivateKey) GenerateKeyPair(byte[] keyMaterial)
         {
-            using (var keyPairNative = VirgilKeyPair
-                   .GenerateFromKeyMaterial(VirgilKeyPair.Type.FAST_EC_ED25519, seed))
-            {
-                var crypto = new VirgilCrypto();
-                var publicKey = crypto.ImportPublicKey(keyPairNative.PublicKey());
-                var privateKey = crypto.ImportPrivateKey(keyPairNative.PrivateKey());
+            var crypto = new VirgilCrypto();
+            var keyPair = crypto.GenerateKeys(this.DefaultKeyPairType, keyMaterial);
 
-                return new KeyPair((PublicKey)publicKey, (PrivateKey)privateKey);
-            }
+            return (keyPair.PublicKey, keyPair.PrivateKey);
         }
 
         public void Dispose()

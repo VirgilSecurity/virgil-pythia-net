@@ -20,8 +20,12 @@
                 var virgilCrypto = new VirgilCrypto();
                 var signer = new VirgilAccessTokenSigner();
 
-                var apiKey = virgilCrypto.ImportPrivateKey(Bytes.FromString(AppSettings.Get.ApiKey, StringEncoding.BASE64));
-                var generator = new JwtGenerator(AppSettings.Get.AppId, apiKey, AppSettings.Get.ApiKeyId, TimeSpan.FromDays(1), signer);
+                var apiKey = virgilCrypto.ImportPrivateKey(
+                    Bytes.FromString(AppSettings.Get.ApiKey, StringEncoding.BASE64));
+                
+                var generator = new JwtGenerator(AppSettings.Get.AppId, apiKey, 
+                    AppSettings.Get.ApiKeyId, TimeSpan.FromDays(1), signer);
+                
                 var jwt = generator.GenerateToken("BRAINKEY_CLIENT");
                 
                 return Task.FromResult(jwt.ToString());

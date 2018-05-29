@@ -1,11 +1,9 @@
 ﻿namespace Virgil.Pythia.Tests
 {
-    using System.Configuration;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Newtonsoft.Json;
-    using System;
-
+ 
     [DataContract]
     public class AppSettings
     {
@@ -38,6 +36,9 @@
         [DataMember(Name = "pythia_protocol_testdata")]
         public PythiaProtocolTestDataModel ProtocolTestData { get; set; }
 
+        [DataMember(Name = "brain_key_testdata")]
+        public PythiaProtocolTestDataModel BrainKeyTestData { get; set; }
+
         [DataContract]
         public class PythiaProtocolTestDataModel
         {
@@ -49,6 +50,38 @@
 
             [DataMember(Name = "kInvalidUpdateToken")]
             public string InvalidUpdateToken { get; set; }
+        }
+
+        [DataContract]
+        public class BrainKeyTestDataModel
+        {
+
+            [DataMember(Name = "kTransformationKeyId")]
+            public string kTransformationKeyId { get; set; }
+
+            [DataMember(Name = "kSecret")]
+            public string kSecret { get; set; }
+
+            [DataMember(Name = "kScopeSecret")]
+            public string kScopeSecret { get; set; }
+
+            [DataMember(Name = "kPassword1")]
+            public string kPassword1 { get; set; }
+
+            [DataMember(Name = "kPassword2")]
+            public string kPassword2 { get; set; }
+
+            [DataMember(Name = "kBrainKeyId")]
+            public string kBrainKeyId { get; set; }
+
+            [DataMember(Name = "kKeyId1")]
+            public string kKeyId1 { get; set; }
+
+            [DataMember(Name = "kKeyId2")]
+            public string kKeyId2 { get; set; }
+
+            [DataMember(Name = "kKeyId3")]
+            public string kKeyId3 { get; set; }
         }
     }
 }

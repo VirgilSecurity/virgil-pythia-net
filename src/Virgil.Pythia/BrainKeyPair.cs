@@ -32,17 +32,29 @@
 // IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-namespace Virgil.Pythia.Crypto
+namespace Virgil.Pythia
 {
     using Virgil.CryptoAPI;
 
-    public interface IPythiaCrypto
+    public class BrainKeyPair
     {
-        BlindingResult Blind(string password);
-        byte[] Deblind(byte[] transformedPassword, byte[] blindingSecret);
-        bool Verify(PythiaProofParams parameters);
-        byte[] UpdateDeblindedPassword(byte[] deblindedPassword, byte[] updateToken);
-        byte[] GenerateSalt(uint size = 32);
-        (IPublicKey, IPrivateKey) GenerateKeyPair(byte[] keyMaterial);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrainKeyPair"/> class.
+        /// </summary>
+        public BrainKeyPair(IPublicKey publicKey, IPrivateKey privateKey)
+        {
+            this.PublicKey = publicKey;
+            this.PrivateKey = privateKey;
+        }
+
+        /// <summary>
+        /// Gets the public key.
+        /// </summary>
+        public IPublicKey PublicKey { get; private set; }
+
+        /// <summary>
+        /// Gets the private key.
+        /// </summary>
+        public IPrivateKey PrivateKey { get; private set; }
     }
 }
