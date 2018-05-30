@@ -7,13 +7,17 @@
 
 ## Introduction
 
-<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a>[Virgil Security](https://virgilsecurity.com) provides an SDK which lets you implement Pythia protocol. 
-Pythia is a technology that gives you a new, more secure mechanism that "breach-proofs" user passwords and lessens the security risks associated with weak passwords by providing cryptographic leverage for the defender (by eliminating offline password cracking attacks), detection for online attacks, and key rotation to recover from stolen password databases.
+<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a>[Virgil Security](https://virgilsecurity.com) provides an SDK which allows you to communicate with Virgil Pythia Service and implement Pythia protocol for the following use cases: 
+- **Breach-proof password**. Pythia is a technology that gives you a new, more secure mechanism that "breach-proofs" user passwords and lessens the security risks associated with weak passwords by providing cryptographic leverage for the defender (by eliminating offline password cracking attacks), detection for online attacks, and key rotation to recover from stolen password databases.
+- **BrainKey**. User's Private Key which is based on user's password. BrainKey can be easily restored and is resistant to online and offline attacks.
+
+In both cases you get the mechanism which assures you that neither Virgil nor attackers know anything about user's password.
 
 ## SDK Features
 - communicate with Virgil Pythia Service
 - manage your Pythia application credentials
 - create, verify and update user's breach-proof password
+- generate user's BrainKey
 - use [Virgil Crypto Pythia library][_virgil_crypto_pythia]
 
 ## Install and configure SDK
@@ -30,7 +34,7 @@ The package is available for .NET Framework 4.5 and newer.
 Installing the package using Package Manager Console:
 
 ```bash
-Run PM> Install-Package Virgil.Pythia -Version 0.1.0-beta
+Run PM> Install-Package Virgil.Pythia -Version 0.2.0
 ```
 
 ### Configure SDK
@@ -58,6 +62,8 @@ var pythia = PythiaProtocol.Initialize(config);
 
 
 ## Usage Examples
+
+### Breach-proof password
 
 Virgil Pythia SDK lets you easily perform all the necessary operations to create, verify and update user's breach-proof password without requiring any additional actions and use Virgil Crypto library.
 
@@ -101,7 +107,7 @@ Now we can start creating breach-proof passwords for users. Depending on the sit
 - `CreateBreachProofPassword` is used to create a user's breach-proof password on your Application Server.
 - `VerifyBreachProofPassword` is used to verify a user's breach-proof password.
 
-### Create Breach-Proof Password
+#### Create Breach-Proof Password
 
 Use this flow to create a new breach-proof password for a user.
 
@@ -122,7 +128,7 @@ After performing `CreateBreachProofPassword` function you get previously mention
 
 Check that you updated all database records and delete the now unnecessary column where user passwords were previously stored.
 
-### Verify Breach-Proof Password
+#### Verify Breach-Proof Password
 
 Use this flow when a user already has his or her own breach-proof password in your database. You will have to pass his or her password into an `VerifyBreachProofPassword` function:
 
@@ -142,7 +148,7 @@ if (!isValid)
 
 The difference between the `VerifyBreachProofPassword` and `CreateBreachProofPassword` functions is that the verification of Pythia Service is optional in `VerifyBreachProofPassword` function, which allows you to achieve maximum performance when processing data. You can turn on a proof step in `VerifyBreachProofPassword` function if you have any suspicions that a user or Pythia Service were compromised.
 
-### Update breach-proof passwords
+#### Update breach-proof passwords
 
 This step will allow you to use an `updateToken` in order to update users' breach-proof passwords in your database.
 
@@ -166,6 +172,32 @@ Here is an example of using the `UpdateBreachProofPassword` function:
 
 var updatedPwd = pythia.UpdateBreachProofPassword("UT.1.2.UPDATE_TOKEN", pwd);
 ```
+
+### BrainKey
+
+#### Generate BrainKey
+
+```cs
+// Define a callback that obtains an Access Token from 
+// your application backend service.
+Func<TokenContext, Task<string>> tokenCallback = async (ctx) =>
+{
+    // Getting an Access Token may looks like this:
+    
+    HttpClient client = new HttpClient();
+    var responseMessage = await client.GetAsync("https://yourapplicatiom.net/get-virgil-access-token");
+    var accessToken = await responseMessage.Content.ReadAsStringAsync();
+
+    return accessToken;
+};
+
+ // Initialize and create an instace of BrainKey class.
+ var brainKey = BrainKey.Initialize(tokenCallback);
+
+// Generate default public/private key pair which is Curve ED25519
+var keyPair = brainKey.GenerateKeyPair("some password");
+```
+
 
 ## Docs
 Virgil Security has a powerful set of APIs, and the documentation below can get you started today.
