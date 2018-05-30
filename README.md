@@ -182,10 +182,10 @@ var updatedPwd = pythia.UpdateBreachProofPassword("UT.1.2.UPDATE_TOKEN", pwd);
 // your application backend service.
 Func<TokenContext, Task<string>> tokenCallback = async (ctx) =>
 {
-    // Getting an Access Token may looks like this:
+    // Getting an Access Token may look like this:
     
     HttpClient client = new HttpClient();
-    var responseMessage = await client.GetAsync("https://yourapplicatiom.net/get-virgil-access-token");
+    var responseMessage = await client.GetAsync("https://yourapplication.net/get-virgil-access-token");
     var accessToken = await responseMessage.Content.ReadAsStringAsync();
 
     return accessToken;
