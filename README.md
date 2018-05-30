@@ -34,7 +34,7 @@ The package is available for .NET Framework 4.5 and newer.
 Installing the package using Package Manager Console:
 
 ```bash
-Run PM> Install-Package Virgil.Pythia -Version 0.1.0-beta
+Run PM> Install-Package Virgil.Pythia -Version 0.2.0
 ```
 
 ### Configure SDK
@@ -62,6 +62,8 @@ var pythia = PythiaProtocol.Initialize(config);
 
 
 ## Usage Examples
+
+### Breach-proof password
 
 Virgil Pythia SDK lets you easily perform all the necessary operations to create, verify and update user's breach-proof password without requiring any additional actions and use Virgil Crypto library.
 
@@ -104,8 +106,6 @@ First of all, you need to set up your database to store users' breach-proof pass
 Now we can start creating breach-proof passwords for users. Depending on the situation, you will use one of the following Pythia SDK functions:
 - `CreateBreachProofPassword` is used to create a user's breach-proof password on your Application Server.
 - `VerifyBreachProofPassword` is used to verify a user's breach-proof password.
-
-### Breach-Proof Password
 
 #### Create Breach-Proof Password
 
@@ -175,7 +175,28 @@ var updatedPwd = pythia.UpdateBreachProofPassword("UT.1.2.UPDATE_TOKEN", pwd);
 
 ### BrainKey
 
+#### Generate BrainKey
 
+```cs
+// Define a callback that obtains an Access Token from 
+// your application backend service.
+Func<TokenContext, Task<string>> tokenCallback = async (ctx) =>
+{
+    // Getting an Access Token may looks like this:
+    
+    HttpClient client = new HttpClient();
+    var responseMessage = await client.GetAsync("https://yourapplicatiom.net/get-virgil-access-token");
+    var accessToken = await responseMessage.Content.ReadAsStringAsync();
+
+    return accessToken;
+};
+
+ // Initialize and create an instace of BrainKey class.
+ var brainKey = BrainKey.Initialize(tokenCallback);
+
+// Generate default public/private key pair which is Curve ED25519
+var keyPair = brainKey.GenerateKeyPair("some password");
+```
 
 
 ## Docs
