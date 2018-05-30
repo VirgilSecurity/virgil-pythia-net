@@ -191,8 +191,8 @@ Func<TokenContext, Task<string>> tokenCallback = async (ctx) =>
     return accessToken;
 };
 
- // Initialize and create an instace of BrainKey class.
- var brainKey = BrainKey.Initialize(tokenCallback);
+// Initialize and create an instace of BrainKey class.
+var brainKey = BrainKey.Initialize(tokenCallback);
 
 // Generate default public/private key pair which is Curve ED25519
 var keyPair = brainKey.GenerateKeyPair("some password");
