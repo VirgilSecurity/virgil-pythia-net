@@ -22,7 +22,7 @@ In both cases you get the mechanism which assures you that neither Virgil nor at
 
 ## Install and configure SDK
 
-The Virgil .NET Pythia is provided as a package named `Virgil.Pythia`. The package is distributed via [NuGet package](https://docs.microsoft.com/en-us/nuget/quickstart/use-a-package) management system.
+The Virgil .NET Pythia SDK is provided as a package named `Virgil.Pythia`. The package is distributed via [NuGet package](https://docs.microsoft.com/en-us/nuget/quickstart/use-a-package) management system.
 
 The package is available for .NET Framework 4.5 and newer.
 
@@ -222,7 +222,7 @@ Virgil Security has a powerful set of APIs, and the documentation below can get 
 
 * [Breach-Proof Password][_pythia_use_case] Use Case
 * [The Pythia PRF Service](https://eprint.iacr.org/2015/644.pdf) - foundation principles of the protocol
-* [Virgil Security Documenation][_documentation]
+* [Virgil Security Documentation][_documentation]
 
 ## License
 
