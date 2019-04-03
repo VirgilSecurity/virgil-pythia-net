@@ -81,9 +81,10 @@ namespace Virgil.Pythia
             return new BrainKeyPair(publicKey, privateKey);
         }
 
-        public static BrainKey Initialize(Func<TokenContext, Task<string>> obtainTokenCallback) 
+        public static BrainKey Initialize(Func<TokenContext, Task<string>> obtainTokenCallback,
+                                          string ApiURL = null) 
         {
-            var connection = new ServiceConnection("https://api.virgilsecurity.com");
+            var connection = new ServiceConnection(ApiURL ?? "https://api.virgilsecurity.com");
             var client = new PythiaClient(connection, Configuration.Serializer);
             var crypto = new PythiaCrypto();
 

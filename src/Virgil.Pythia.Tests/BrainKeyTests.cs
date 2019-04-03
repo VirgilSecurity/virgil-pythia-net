@@ -31,7 +31,7 @@
                 return Task.FromResult(jwt.ToString());
             };
 
-            var brainKey = BrainKey.Initialize(tokenCallback);
+            var brainKey = BrainKey.Initialize(tokenCallback, AppSettings.Get.ApiURL);
             var keyPair1 = await brainKey.GenerateKeyPair("some password");
             await Task.Delay(TimeSpan.FromSeconds(2));
             var keyPair2 = await brainKey.GenerateKeyPair("some password");

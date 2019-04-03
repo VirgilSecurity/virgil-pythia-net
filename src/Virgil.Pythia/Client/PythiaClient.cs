@@ -74,7 +74,7 @@ namespace Virgil.Pythia.Client
                 .WithAuthorization(accessToken)
                 .WithBody(this.serializer, model)
                 .WithEndpoint("/pythia/v1/password");
-                       
+
             var response = await this.connection.SendAsync(request)
                 .ConfigureAwait(false);
             

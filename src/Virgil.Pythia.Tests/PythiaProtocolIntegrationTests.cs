@@ -1,6 +1,7 @@
 ﻿namespace Virgil.Pythia.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
@@ -28,7 +29,8 @@
                 AppId = AppSettings.Get.AppId,
                 ApiKey = AppSettings.Get.ApiKey,
                 ApiKeyId = AppSettings.Get.ApiKeyId,
-                ProofKeys = new[] { AppSettings.Get.ProofKeys[0] }
+                ProofKeys = new List<string>() { AppSettings.Get.ProofKeys[0] },
+                ApiURL = AppSettings.Get.ApiURL
             };
 
             var protocol = PythiaProtocol.Initialize(config);
@@ -60,7 +62,8 @@
                 AppId = AppSettings.Get.AppId,
                 ApiKey = AppSettings.Get.ApiKey,
                 ApiKeyId = AppSettings.Get.ApiKeyId,
-                ProofKeys = AppSettings.Get.ProofKeys
+                ProofKeys = AppSettings.Get.ProofKeys,
+                ApiURL = AppSettings.Get.ApiURL
             };
 
             var protocol = PythiaProtocol.Initialize(config);
@@ -79,7 +82,8 @@
                 AppId = AppSettings.Get.AppId,
                 ApiKey = AppSettings.Get.ApiKey,
                 ApiKeyId = AppSettings.Get.ApiKeyId,
-                ProofKeys = AppSettings.Get.ProofKeys.Skip(1)
+                ProofKeys = AppSettings.Get.ProofKeys.Skip(1),
+                ApiURL = AppSettings.Get.ApiURL
             };
 
             var protocol = PythiaProtocol.Initialize(config);
@@ -159,7 +163,8 @@
                 AppId = AppSettings.Get.AppId,
                 ApiKey = AppSettings.Get.ApiKey,
                 ApiKeyId = AppSettings.Get.ApiKeyId,
-                ProofKeys = AppSettings.Get.ProofKeys.Take(2)
+                ProofKeys = AppSettings.Get.ProofKeys.Take(2),
+                ApiURL = AppSettings.Get.ApiURL
             };
 
             var protocol1 = PythiaProtocol.Initialize(config1);
@@ -191,7 +196,8 @@
                 AppId = AppSettings.Get.AppId,
                 ApiKey = AppSettings.Get.ApiKey,
                 ApiKeyId = AppSettings.Get.ApiKeyId,
-                ProofKeys = AppSettings.Get.ProofKeys.Take(3)
+                ProofKeys = AppSettings.Get.ProofKeys.Take(3),
+                ApiURL = AppSettings.Get.ApiURL
             };
 
             var protocol = PythiaProtocol.Initialize(config);
